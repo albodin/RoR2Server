@@ -18,14 +18,14 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 COPY RoR2Patcher/ ./RoR2Patcher/
-COPY "Risk of Rain 2/" /game/
+COPY ["Risk of Rain 2/", "/game/"]
 COPY config.cfg /app/config.cfg
 
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
 ENV MAX_PLAYERS=4
-ENV STEAM_HEARTBEAT=true
+ENV STEAM_HEARTBEAT=1
 ENV HOSTNAME="Risk of Rain 2 Dedicated Server"
 ENV PORT=27015
 ENV STEAM_QUERY_PORT=27016

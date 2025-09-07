@@ -8,7 +8,7 @@ services:
       - "${STEAM_QUERY_PORT:-27016}:${STEAM_QUERY_PORT:-27016}/udp"
     environment:
       - MAX_PLAYERS=${MAX_PLAYERS:-4}
-      - STEAM_HEARTBEAT=${STEAM_HEARTBEAT:-true}
+      - STEAM_HEARTBEAT=${STEAM_HEARTBEAT:-1}
       - HOSTNAME=${HOSTNAME:-Risk of Rain 2 Dedicated Server}
       - PORT=${PORT:-27015}
       - STEAM_QUERY_PORT=${STEAM_QUERY_PORT:-27016}

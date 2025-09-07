@@ -50,6 +50,7 @@ echo "Starting Risk of Rain 2 Dedicated Server..."
 
 export DISPLAY=:99
 Xvfb :99 -screen 0 1024x768x24 &
+sleep 5
 
 SERVER_ARGS="-batchmode -nographics $EXTRA_ARGS"
 wine "Risk of Rain 2.exe" $SERVER_ARGS &
