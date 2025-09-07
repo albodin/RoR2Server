@@ -1,0 +1,25 @@
+services:
+  ror2-server:
+    build: .
+    container_name: ror2-dedicated-server
+    restart: unless-stopped
+    ports:
+      - "${PORT:-27015}:${PORT:-27015}/udp"
+      - "${STEAM_QUERY_PORT:-27016}:${STEAM_QUERY_PORT:-27016}/udp"
+    environment:
+      - MAX_PLAYERS=${MAX_PLAYERS:-4}
+      - STEAM_HEARTBEAT=${STEAM_HEARTBEAT:-true}
+      - HOSTNAME=${HOSTNAME:-Risk of Rain 2 Dedicated Server}
+      - PORT=${PORT:-27015}
+      - STEAM_QUERY_PORT=${STEAM_QUERY_PORT:-27016}
+      - STEAM_SERVER_PORT=${STEAM_SERVER_PORT:-0}
+      - SERVER_PASSWORD=${SERVER_PASSWORD:-}
+      - SERVER_CUSTOM_TAGS=${SERVER_CUSTOM_TAGS:-}
+      - GAMEMODE=${GAMEMODE:-ClassicRun}
+      - EXTRA_ARGS=${EXTRA_ARGS:-}
+    networks:
+      - ror2-network
+
+networks:
+  ror2-network:
+    driver: bridge
