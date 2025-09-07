@@ -1,19 +1,11 @@
 FROM steamcmd/steamcmd:latest
 
 RUN apt-get update && apt-get install -y \
-    wget \
-    apt-transport-https \
-    software-properties-common \
     gettext-base \
     wine64 \
     xvfb \
-    && wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
-    && dpkg -i packages-microsoft-prod.deb \
-    && rm packages-microsoft-prod.deb \
     && apt-get update \
-    && apt-get install -y dotnet-sdk-8.0 \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get install -y dotnet-sdk-8.0
 
 WORKDIR /app
 
