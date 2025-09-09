@@ -61,6 +61,7 @@ namespace RoR2DedicatedPatcher
                 PatchAppId(assembly);
                 PatchLoadStartupConfigs(assembly);
                 PatchSteamworksLobbyManager(assembly);
+                PatchSkipSteamClientInit(assembly);
                 
                 Console.WriteLine($"Saving to: {outputDll}");
                 assembly.Write(outputDll);
@@ -239,5 +240,39 @@ namespace RoR2DedicatedPatcher
                 }
             }
         }
+        
+        static void PatchSkipSteamClientInit(AssemblyDefinition assembly)
+        {
+            Console.WriteLine("Patching RoR2Application to skip Steam client initialization...");
+            
+            var roR2AppType = assembly.MainModule.Types.FirstOrDefault(t => t.Name == "RoR2Application");
+            
+            // The coroutine iterator for InitializeGameRoutine
+            var iteratorClass = roR2AppType.NestedTypes.FirstOrDefault(t => 
+                t.Name.Contains("InitializeGameRoutine") && t.Name.Contains("d__"));
+            
+            var moveNextMethod = iteratorClass.Methods.FirstOrDefault(m => m.Name == "MoveNext");
+            var instructions = moveNextMethod.Body.Instructions;
+            var processor = moveNextMethod.Body.GetILProcessor();
+            
+            int patchCount = 0;
+            
+            // Find the steamworksFailed assignment and skip the client initialization
+            for (int i = 0; i < instructions.Count - 2; i++)
+            {
+                // Look for: roR2Application.steamworksFailed = true;
+                if (instructions[i].OpCode == OpCodes.Ldc_I4_1 &&
+                    instructions[i + 1].OpCode == OpCodes.Stfld &&
+                    instructions[i + 1].Operand?.ToString().Contains("steamworksFailed") == true)
+                {
+                    // Replace the assignment with false
+                    processor.Replace(instructions[i], processor.Create(OpCodes.Ldc_I4_0));
+                    patchCount++;
+                }
+            }
+            
+            Console.WriteLine($"Patched {patchCount} steamworksFailed assignment(s)");
+        }
+
     }
 }
