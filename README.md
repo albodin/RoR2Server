@@ -26,7 +26,7 @@ Server settings can be configured through environment variables in `docker-compo
 
 - `MAX_PLAYERS` - Maximum number of players (default: 4)
 - `STEAM_HEARTBEAT` - Enable Steam server browser listing (default: 1)
-- `HOSTNAME` - Server name (default: "Risk of Rain 2 Dedicated Server")
+- `SERVER_HOSTNAME` - Server name (default: "Risk of Rain 2 Dedicated Server")
 - `PORT` - Game port (default: 27015)
 - `STEAM_QUERY_PORT` - Steam query port (default: 27016)
 - `STEAM_SERVER_PORT` - Steam server port, 0 for random (default: 0)

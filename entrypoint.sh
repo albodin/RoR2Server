@@ -20,6 +20,8 @@ if [ ! -f "$ROR2_DLL_PATH" ]; then
     exit 1
 fi
 
+cp -f /tmp/steamworks_sdk/*64.dll "${GAME_DIR}/" 2>/dev/null || true
+
 if [ ! -f "$BACKUP_PATH" ]; then
     echo "Backup not found. Patching RoR2.dll..."
     

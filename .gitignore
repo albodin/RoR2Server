@@ -1,3 +1,10 @@
 Risk of Rain 2/
 RoR2Patcher/bin/
 RoR2Patcher/obj/
+RefCode/
+output/
+
+# Development files
+Dockerfile.dev
+entrypoint-dev.sh
+docker-compose.dev.yml
