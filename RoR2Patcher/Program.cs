@@ -62,6 +62,8 @@ namespace RoR2DedicatedPatcher
                 PatchLoadStartupConfigs(assembly);
                 PatchSteamworksLobbyManager(assembly);
                 PatchSkipSteamClientInit(assembly);
+                PatchBuildId(assembly);
+                PatchVersionCheck(assembly);
                 
                 Console.WriteLine($"Saving to: {outputDll}");
                 assembly.Write(outputDll);
@@ -273,6 +275,48 @@ namespace RoR2DedicatedPatcher
             
             Console.WriteLine($"Patched {patchCount} steamworksFailed assignment(s)");
         }
-
+        
+        static void PatchBuildId(AssemblyDefinition assembly)
+        {
+            Console.WriteLine("Patching AssignBuildId to use dedicated server version...");
+            
+            var roR2AppType = assembly.MainModule.Types.FirstOrDefault(t => t.Name == "RoR2Application");
+            var assignBuildIdMethod = roR2AppType.Methods.FirstOrDefault(m => m.Name == "AssignBuildId");
+            
+            // Clear the method and replace with: buildId = "1.2.4.1";
+            var processor = assignBuildIdMethod.Body.GetILProcessor();
+            assignBuildIdMethod.Body.Instructions.Clear();
+            
+            var buildIdField = roR2AppType.Fields.FirstOrDefault(f => f.Name == "buildId");
+            
+            assignBuildIdMethod.Body.Instructions.Add(processor.Create(OpCodes.Ldstr, "1.2.4.1"));
+            assignBuildIdMethod.Body.Instructions.Add(processor.Create(OpCodes.Stsfld, buildIdField));
+            assignBuildIdMethod.Body.Instructions.Add(processor.Create(OpCodes.Ret));
+            
+            Console.WriteLine("Patched AssignBuildId to set buildId to 1.2.4.1");
+        }
+        
+        static void PatchVersionCheck(AssemblyDefinition assembly)
+        {
+            Console.WriteLine("Patching version check to accept client version 1.3.9...");
+            
+            var serverAuthManager = assembly.MainModule.Types.FirstOrDefault(t => t.FullName == "RoR2.Networking.ServerAuthManager");
+            var handleSetClientAuth = serverAuthManager.Methods.FirstOrDefault(m => m.Name == "HandleSetClientAuth");
+            
+            var instructions = handleSetClientAuth.Body.Instructions;
+            var processor = handleSetClientAuth.Body.GetILProcessor();
+            
+            for (int i = 0; i < instructions.Count; i++)
+            {
+                if (instructions[i].OpCode == OpCodes.Call && 
+                    instructions[i].Operand?.ToString().Contains("GetBuildId") == true)
+                {
+                    // Replace call to GetBuildId with ldstr "1.3.9"
+                    processor.Replace(instructions[i], processor.Create(OpCodes.Ldstr, "1.3.9"));
+                    Console.WriteLine("Patched version check to use 1.3.9");
+                    break;
+                }
+            }
+        }
     }
 }
