@@ -4,10 +4,8 @@ RUN apt-get update && apt-get install -y \
     gettext-base \
     wine64 \
     xvfb \
-    && apt-get update \
-    && apt-get install -y dotnet-sdk-8.0
-
-RUN steamcmd +force_install_dir /tmp/steamworks_sdk +login anonymous +@sSteamCmdForcePlatformType windows +app_update 1007 +quit
+    dotnet-sdk-8.0 \
+    && steamcmd +force_install_dir /tmp/steamworks_sdk +login anonymous +@sSteamCmdForcePlatformType windows +app_update 1007 +quit \
 
 WORKDIR /app
 
