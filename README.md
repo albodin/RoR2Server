@@ -20,6 +20,16 @@ This project patches the Risk of Rain 2 game client to function as a dedicated s
    docker compose build
    ```
 
+If you wish to run the server on a different machine save the image using (assuming you didn't change the image name in docker-compose.yml):
+``` bash
+docker save -o ror2serverImage.tar ror2server-ror2-server:latest
+```
+
+Then after transferring to the new machine you can load and use it:
+```bash
+docker load -i ror2serverImage.tar
+``` 
+
 ## Configuration
 
 Server settings can be configured through environment variables in `docker-compose.yml` or by creating a `.env` file:
